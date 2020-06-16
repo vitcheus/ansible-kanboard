@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: kanboard
   author: Ilya Shataev <ilya.shataev@gmail.com>
   description: Kanboard
   license: MIT

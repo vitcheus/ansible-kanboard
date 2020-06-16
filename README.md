@@ -115,7 +115,7 @@ Example Playbook
   become: yes
   become_method: sudo
   roles:
-    - ansible-kanboard
+    - vitcheus.kanboard
   vars:
     kanboard_version: "1.2.13"
     kanboard_user: nginx
