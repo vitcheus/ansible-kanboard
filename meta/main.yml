@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  author: Ilya Shataev <ilya.shataev@gmail.com>
+  description: Kanboard
+  license: MIT
+  min_ansible_version: 2.6
+  platforms:
+    - name: EL
+      versions:
+        - 7
+        - 8
+    - name: Fedora
+      versions:
+        - 29
+  galaxy_tags:
+    - kanboard
+    - taskstracker
+    - centos
+    - centos7
+    - rhel
+    - rhel7
+    - fedora
+dependencies: []

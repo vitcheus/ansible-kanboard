@@ -1,0 +1,10 @@
+{{ kanboard_log_path }}/debug.log
+{
+    copytruncate
+    missingok
+    rotate {{ kanboard_logrotate_freq }}
+    daily
+    dateext
+    compress
+    su {{ kanboard_user }} {{ kanboard_group }}
+}

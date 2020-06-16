@@ -1,0 +1,35 @@
+---
+kanboard_version: "1.2.14"
+kanboard_zip_url: "https://github.com/kanboard/kanboard/archive/v{{ kanboard_version }}.zip"
+
+# System user and group
+kanboard_manage_user: true
+kanboard_user: kanboard
+kanboard_group: nginx
+
+# Security
+kanboard_secure_install: true
+kanboard_session_duration: 0
+kanboard_security_config_map: {}
+
+# Path
+kanboard_bin_path: /opt/kanboard
+kanboard_data_path: "{{ kanboard_bin_path }}/data"
+kanboard_log_path: "{{ kanboard_bin_path }}/logs"
+kanboard_plugin_path: "{{ kanboard_bin_path }}/plugins"
+kanboard_download_tmp: /tmp/kanboard
+
+# Logging
+kanboard_log_driver: file
+kanboard_logrotate_freq: 7
+
+# DB setting
+kanboard_backend: sqlite
+kanboard_db_host: localhost
+kanboard_db_port: ""
+kanboard_db_username: kanboard
+kanboard_db_password: ""
+kanboard_db_name: kanboard
+
+# LDAP setting
+kanboard_ldap_config_map: {}

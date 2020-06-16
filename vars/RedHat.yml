@@ -1,0 +1,7 @@
+---
+kanboard_os_packages_prerequisites:
+  - libselinux-python
+  - unzip
+  - ca-certificates
+  - rsync
+  - zip

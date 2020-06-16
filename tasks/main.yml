@@ -1,0 +1,141 @@
+---
+- name: "Include OS-specific variables"
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family }}.yml"
+      paths:
+        - vars
+  tags:
+    - kanboard
+
+- name: "Check existing Kanboard installation"
+  command: "command -v {{ kanboard_bin_path }}/cli"
+  environment:
+    PATH: "{{ kanboard_bin_path }}:{{ ansible_env.PATH }}"
+  register: kanboard_installation
+  changed_when: false
+  ignore_errors: true
+  check_mode: false
+  tags:
+    - kanboard
+
+- name: "Get installed Kanboard version"
+  shell: |
+    set -o pipefail
+    {{ kanboard_installation.stdout }} cli --version | cut -d' ' -f2
+  args:
+    executable: /bin/bash
+  register: installed_kanboard_version
+  changed_when: false
+  check_mode: false
+  when: not kanboard_installation is failed
+  tags:
+    - kanboard
+
+- name: "Compute if installation is required"
+  set_fact:
+    kanboard_installation_required: "{{ kanboard_installation is failed or installed_kanboard_version.stdout != kanboard_version }}"
+  tags:
+    - kanboard
+
+- name: "Ensure all directories exists"
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: "{{ kanboard_user }}"
+    group: "{{ kanboard_group }}"
+    mode: '0775'
+  loop:
+    - "{{ kanboard_bin_path }}"
+    - "{{ kanboard_plugin_path }}"
+    - "{{ kanboard_data_path }}"
+    - "{{ kanboard_log_path }}"
+  tags:
+    - kanboard
+
+- name: "Install Kanboard software"
+  block:
+    - name: "Install prerequisites package"
+      package:
+        name: "{{ kanboard_os_packages_prerequisites }}"
+        update_cache: yes
+
+    - name: "Ensure download kanboard dir exists"
+      file:
+        path: "{{ kanboard_download_tmp }}"
+        state: directory
+
+    - name: "Download kanboard source"
+      get_url:
+        url: "{{ kanboard_zip_url }}"
+        dest: "{{ kanboard_download_tmp }}/kanboard_{{ kanboard_version }}.zip"
+        owner: "{{ kanboard_user }}"
+        group: "{{ kanboard_group }}"
+#        mode: '0775'
+      register: kanboard_download
+
+    - name: "Unzip kanboard archive"
+      unarchive:
+        remote_src: true
+        src: "{{ kanboard_download.dest }}"
+        dest: "{{ kanboard_download_tmp }}"
+        owner: "{{ kanboard_user }}"
+        group: "{{ kanboard_group }}"
+        # extra_opts: ['--strip-components=1']
+        mode: '0775'
+
+#TODO maybe rewrite to Synchronize module from rsync
+    - name: "Synchronize with {{ kanboard_bin_path }}"
+      shell: rsync -a {{ kanboard_download_tmp }}/kanboard-{{ kanboard_version }}/* {{ kanboard_bin_path }}
+      args:
+        executable: /bin/bash
+
+    - name: "Cleanup"
+      file:
+        path: "{{ kanboard_download_tmp }}"
+        state: absent
+  when: kanboard_installation_required | bool
+  tags:
+    - kanboard
+
+- name: "Secure kanboard configuration"
+  file:
+    path: "{{ kanboard_bin_path }}/{{ item }}"
+    state: absent
+  loop:
+    - "ChangeLog"
+    - "LICENSE"
+    - "web.config"
+    - "data/web.config"
+    - "config.default.php"
+  when:
+    - kanboard_secure_install | bool
+    - kanboard_installation_required | bool
+  tags:
+    - kanboard
+
+- name: "Deploy kanboard configuration "
+  template:
+    src: "config.php.j2"
+    dest: "{{ kanboard_bin_path }}/config.php"
+    group: "{{ kanboard_group }}"
+    owner: "{{ kanboard_user }}"
+    mode: '0640'
+  tags:
+    - kanboard
+    - configure
+
+- name: "Create logrotate configuration"
+  template:
+    src: kanboard_logrotate.j2
+    dest: /etc/logrotate.d/kanboard
+    owner: root
+    group: root
+    mode: '0644'
+  when: kanboard_log_driver | lower == "file"
+  tags:
+    - kanboard
+    - configure

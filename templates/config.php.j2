@@ -1,0 +1,266 @@
+<?php
+
+/*******************************************************************/
+/* Rename this file to config.php if you want to change the values */
+/*                                                                 */
+/* Make sure all paths are absolute by using __DIR__ where needed  */
+/*******************************************************************/
+
+// Data folder (must be writeable by the web server user and absolute)
+define('DATA_DIR', '{{ kanboard_data_path }}');
+
+// Enable/Disable debug
+define('DEBUG', false);
+
+// Available log drivers: syslog, stderr, stdout, system or file
+define('LOG_DRIVER', '{{ kanboard_log_driver | lower }}');
+
+// Log filename if the log driver is "file"
+define('LOG_FILE', '{{ kanboard_log_path }}/debug.log');
+
+// Plugins directory
+define('PLUGINS_DIR', '{{ kanboard_plugin_path }}');
+
+// Plugins directory URL
+define('PLUGIN_API_URL', 'https://kanboard.org/plugins.json');
+
+// Enable/Disable plugin installer (Disabled by default for security reasons)
+// There is no code review or any approval process to submit a plugin.
+// This is up to the Kanboard instance owner to validate if a plugin is legit.
+define('PLUGIN_INSTALLER', true);
+
+// Available cache drivers are "file" and "memory"
+define('CACHE_DRIVER', 'memory');
+
+// Cache folder to use if cache driver is "file" (must be writeable by the web server user)
+define('CACHE_DIR', DATA_DIR.DIRECTORY_SEPARATOR.'cache');
+
+// Folder for uploaded files (must be writeable by the web server user)
+define('FILES_DIR', DATA_DIR.DIRECTORY_SEPARATOR.'files');
+
+// Enable/disable email configuration from the user interface
+define('MAIL_CONFIGURATION', true);
+
+// E-mail address used for the "From" header (notifications)
+define('MAIL_FROM', 'replace-me@kanboard.local');
+
+// Mail transport available: "smtp", "sendmail", "mail" (PHP mail function), "postmark", "mailgun", "sendgrid"
+define('MAIL_TRANSPORT', 'mail');
+
+// SMTP configuration to use when the "smtp" transport is chosen
+define('MAIL_SMTP_HOSTNAME', '');
+define('MAIL_SMTP_PORT', 25);
+define('MAIL_SMTP_USERNAME', '');
+define('MAIL_SMTP_PASSWORD', '');
+define('MAIL_SMTP_ENCRYPTION', null); // Valid values are null (not a string "null"), "ssl" or "tls"
+
+// Sendmail command to use when the transport is "sendmail"
+define('MAIL_SENDMAIL_COMMAND', '/usr/sbin/sendmail -bs');
+
+// Run automatically database migrations
+// If set to false, you will have to run manually the SQL migrations from the CLI during the next Kanboard upgrade
+// Do not run the migrations from multiple processes at the same time (example: web page + background worker)
+define('DB_RUN_MIGRATIONS', true);
+
+// Database driver: sqlite, mysql or postgres (sqlite by default)
+define('DB_DRIVER', '{{ kanboard_backend }}');
+
+// Mysql/Postgres username
+define('DB_USERNAME', '{{ kanboard_db_username }}');
+
+// Mysql/Postgres password
+define('DB_PASSWORD', '{{ kanboard_db_password }}');
+
+// Mysql/Postgres hostname
+define('DB_HOSTNAME', '{{ kanboard_db_host }}');
+
+// Mysql/Postgres database name
+define('DB_NAME', '{{ kanboard_db_name }}');
+
+// Mysql/Postgres custom port (null = default port)
+define('DB_PORT', {{ kanboard_db_port|default("null", true) }});
+
+// Mysql SSL key
+define('DB_SSL_KEY', null);
+
+// Mysql SSL certificate
+define('DB_SSL_CERT', null);
+
+// Mysql SSL CA
+define('DB_SSL_CA', null);
+
+// Mysql SSL server verification, set to false if you don't want the Mysql driver to validate the certificate CN
+define('DB_VERIFY_SERVER_CERT', null);
+
+// Timeout value for PDO attribute
+define('DB_TIMEOUT', null);
+
+// Enable LDAP authentication (false by default)
+define('LDAP_AUTH', {% if kanboard_ldap_config_map is defined and kanboard_ldap_config_map|length %}true{% else %}false{% endif %});
+
+// LDAP server hostname
+define('LDAP_SERVER', '{{ kanboard_ldap_config_map.ldap_server|default("", true)|lower }}');
+
+// LDAP server port (389 by default)
+define('LDAP_PORT', {{ kanboard_ldap_config_map.ldap_port|default(389, true) }});
+
+// By default, require certificate to be verified for ldaps:// style URL. Set to false to skip the verification
+define('LDAP_SSL_VERIFY', {{ kanboard_ldap_config_map.ldap_ssl_verify|default(true, true)|bool|lower }});
+
+// Enable LDAP START_TLS
+define('LDAP_START_TLS', {{ kanboard_ldap_config_map.ldap_start_tls|default(false, true)|bool|lower }});
+
+// By default Kanboard lowercase the ldap username to avoid duplicate users (the database is case sensitive)
+// Set to true if you want to preserve the case
+define('LDAP_USERNAME_CASE_SENSITIVE', {{ kanboard_ldap_config_map.ldap_username_case_sensitive|default(false, true)|bool|lower }});
+
+// LDAP bind type: "anonymous", "user" or "proxy"
+define('LDAP_BIND_TYPE', '{{ kanboard_ldap_config_map.ldap_bind_type|default("anonymous", true)|lower }}');
+
+// LDAP username to use with proxy mode
+// LDAP username pattern to use with user mode
+define('LDAP_USERNAME', {% if kanboard_ldap_config_map.ldap_username is defined and kanboard_ldap_config_map.ldap_username %}'{{ kanboard_ldap_config_map.ldap_username }}'{% else %}null{% endif %});
+
+// LDAP password to use for proxy mode
+define('LDAP_PASSWORD', {% if kanboard_ldap_config_map.ldap_password is defined and kanboard_ldap_config_map.ldap_password %}'{{ kanboard_ldap_config_map.ldap_password }}'{% else %}null{% endif %});
+
+// LDAP DN for users
+// Example for ActiveDirectory: CN=Users,DC=kanboard,DC=local
+// Example for OpenLDAP: ou=People,dc=example,dc=com
+define('LDAP_USER_BASE_DN', '{{ kanboard_ldap_config_map.ldap_user_base_dn|default("", true) }}');
+
+// LDAP pattern to use when searching for a user account
+// Example for ActiveDirectory: '(&(objectClass=user)(sAMAccountName=%s))'
+// Example for OpenLDAP: 'uid=%s'
+// '(&(objectClass=inetorgperson)(uid=%s)(memberOf=CN=kanboard-users,cn=groups,cn=accounts,dc=local-staff,dc=com))'
+define('LDAP_USER_FILTER', '{{ kanboard_ldap_config_map.ldap_user_filter|default("", true) }}');
+
+// LDAP attribute for username
+// Example for ActiveDirectory: 'sAMAccountName'
+// Example for OpenLDAP: 'uid'
+define('LDAP_USER_ATTRIBUTE_USERNAME', '{{ kanboard_ldap_config_map.ldap_user_attribute_username|default("uid", true) }}');
+
+// LDAP attribute for user full name
+// Example for ActiveDirectory: 'displayname'
+// Example for OpenLDAP: 'cn'
+define('LDAP_USER_ATTRIBUTE_FULLNAME', '{{ kanboard_ldap_config_map.ldap_user_attribute_fullname|default("cn", true) }}');
+
+// LDAP attribute for user email
+define('LDAP_USER_ATTRIBUTE_EMAIL', '{{ kanboard_ldap_config_map.ldap_user_attribute_email|default("mail", true) }}');
+
+// LDAP attribute to find groups in user profile
+define('LDAP_USER_ATTRIBUTE_GROUPS', '{{ kanboard_ldap_config_map.ldap_user_attribute_groups|default("memberOf", true) }}');
+
+// LDAP attribute for user avatar image: thumbnailPhoto or jpegPhoto
+define('LDAP_USER_ATTRIBUTE_PHOTO', '{{ kanboard_ldap_config_map.ldap_user_attribute_photo|default("", true) }}');
+
+// LDAP attribute for user language, example: 'preferredlanguage'
+// Put an empty string to disable language sync
+define('LDAP_USER_ATTRIBUTE_LANGUAGE', '{{ kanboard_ldap_config_map.ldap_user_attribute_language|default("", true) }}');
+
+// Allow automatic LDAP user creation
+define('LDAP_USER_CREATION', {{ kanboard_ldap_config_map.ldap_user_creation|default(true, true)|bool|lower }});
+
+// LDAP DN for administrators
+// Example: CN=Kanboard-Admins,CN=Users,DC=kanboard,DC=local
+define('LDAP_GROUP_ADMIN_DN', '{{ kanboard_ldap_config_map.ldap_group_admin_dn|default("", true) }}');
+
+// LDAP DN for managers
+// Example: CN=Kanboard Managers,CN=Users,DC=kanboard,DC=local
+define('LDAP_GROUP_MANAGER_DN', '{{ kanboard_ldap_config_map.ldap_group_manager_dn|default("", true) }}');
+
+// Enable LDAP group provider for project permissions
+// The end-user will be able to browse LDAP groups from the user interface and allow access to specified projects
+define('LDAP_GROUP_PROVIDER', {{ kanboard_ldap_config_map.ldap_group_provider|default(false, true)|bool|lower }});
+
+// LDAP Base DN for groups
+define('LDAP_GROUP_BASE_DN', '{{ kanboard_ldap_config_map.ldap_group_base_dn|default("", true) }}');
+
+// LDAP group filter
+// Example for ActiveDirectory: (&(objectClass=group)(sAMAccountName=%s*))
+define('LDAP_GROUP_FILTER', '{{ kanboard_ldap_config_map.ldap_group_filter|default("", true) }}');
+
+// LDAP user group filter
+// If this filter is configured, Kanboard will search user groups in LDAP_GROUP_BASE_DN with this filter
+// Example for OpenLDAP: (&(objectClass=posixGroup)(memberUid=%s))
+define('LDAP_GROUP_USER_FILTER', '{{ kanboard_ldap_config_map.ldap_group_user_filter|default("", true) }}');
+
+// LDAP attribute for the user in the group filter
+// 'username' or 'dn'
+define('LDAP_GROUP_USER_ATTRIBUTE', '{{ kanboard_ldap_config_map.ldap_group_user_attribute|default("username", true) }}');
+
+// LDAP attribute for the group name
+define('LDAP_GROUP_ATTRIBUTE_NAME', '{{ kanboard_ldap_config_map.ldap_group_attribute_name|default("cn", true) }}');
+
+// Enable/disable the reverse proxy authentication
+define('REVERSE_PROXY_AUTH', false);
+
+// Header name to use for the username
+define('REVERSE_PROXY_USER_HEADER', 'REMOTE_USER');
+
+// Username of the admin, by default blank
+define('REVERSE_PROXY_DEFAULT_ADMIN', '');
+
+// Default domain to use for setting the email address
+define('REVERSE_PROXY_DEFAULT_DOMAIN', '');
+
+// Enable/disable remember me authentication
+define('REMEMBER_ME_AUTH', {{ kanboard_security_config_map.remember_me_auth|default(true, true)|bool|lower }});
+
+// Enable or disable "Strict-Transport-Security" HTTP header
+define('ENABLE_HSTS', {{ kanboard_security_config_map.enable_hsts|default(true, true)|bool|lower }});
+
+// Enable or disable "X-Frame-Options: DENY" HTTP header
+define('ENABLE_XFRAME', {{ kanboard_security_config_map.enable_xframe|default(true, true)|bool|lower }});
+
+// Escape html inside markdown text
+define('MARKDOWN_ESCAPE_HTML', true);
+
+// API alternative authentication header, the default is HTTP Basic Authentication defined in RFC2617
+define('API_AUTHENTICATION_HEADER', '');
+
+// Enable/disable url rewrite
+define('ENABLE_URL_REWRITE', false);
+
+// Hide login form, useful if all your users use Google/Github/ReverseProxy authentication
+define('HIDE_LOGIN_FORM', false);
+
+// Disabling logout (useful for external SSO authentication)
+define('DISABLE_LOGOUT', false);
+
+// Enable captcha after 3 authentication failure
+define('BRUTEFORCE_CAPTCHA', {{ kanboard_security_config_map.bruteforce_captcha|default(3, true) }});
+
+// Lock the account after 6 authentication failure
+define('BRUTEFORCE_LOCKDOWN', {{ kanboard_security_config_map.bruteforce_lockdown|default(6, true) }});
+
+// Lock account duration in minute
+define('BRUTEFORCE_LOCKDOWN_DURATION', {{ kanboard_security_config_map.bruteforce_lockdown_duration|default(15, true) }});
+
+// Session duration in second (0 = until the browser is closed)
+// See http://php.net/manual/en/session.configuration.php#ini.session.cookie-lifetime
+define('SESSION_DURATION', {{ kanboard_session_duration }});
+
+// HTTP client proxy
+define('HTTP_PROXY_HOSTNAME', '');
+define('HTTP_PROXY_PORT', '3128');
+define('HTTP_PROXY_USERNAME', '');
+define('HTTP_PROXY_PASSWORD', '');
+define('HTTP_PROXY_EXCLUDE', 'localhost');
+
+// Set to false to allow self-signed certificates
+define('HTTP_VERIFY_SSL_CERTIFICATE', true);
+
+// TOTP (2FA) issuer name
+define('TOTP_ISSUER', 'Kanboard');
+
+// Comma separated list of fields to not synchronize when using external authentication providers
+define('EXTERNAL_AUTH_EXCLUDE_FIELDS', 'username');
+
+// Enable or disable displaying group-memberships in userlist (true by default)
+define('SHOW_GROUP_MEMBERSHIPS_IN_USERLIST', true);
+
+// Limit number of groups to display in userlist (The full list of group-memberships is always shown, ...
+// ... when hovering the mouse over the group-icon of a given user!)
+// If set to 0 ALL group-memberships will be listed (7 by default)
+define('SHOW_GROUP_MEMBERSHIPS_IN_USERLIST_WITH_LIMIT', 7);
