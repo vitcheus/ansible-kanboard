@@ -3,8 +3,7 @@ kanboard_version: "1.2.14"
 kanboard_zip_url: "https://github.com/kanboard/kanboard/archive/v{{ kanboard_version }}.zip"
 
 # System user and group
-kanboard_manage_user: true
-kanboard_user: kanboard
+kanboard_user: nginx
 kanboard_group: nginx
 
 # Security
@@ -13,9 +12,9 @@ kanboard_session_duration: 0
 kanboard_security_config_map: {}
 
 # Path
-kanboard_bin_path: /opt/kanboard
+kanboard_bin_path: /usr/share/nginx
 kanboard_data_path: "{{ kanboard_bin_path }}/data"
-kanboard_log_path: "{{ kanboard_bin_path }}/logs"
+kanboard_log_path: /var/log/kanboard
 kanboard_plugin_path: "{{ kanboard_bin_path }}/plugins"
 kanboard_download_tmp: /tmp/kanboard
 
