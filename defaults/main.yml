@@ -12,7 +12,7 @@ kanboard_session_duration: 0
 kanboard_security_config_map: {}
 
 # Path
-kanboard_bin_path: /usr/share/nginx
+kanboard_bin_path: /usr/share/nginx/kanboard
 kanboard_data_path: "{{ kanboard_bin_path }}/data"
 kanboard_log_path: /var/log/kanboard
 kanboard_plugin_path: "{{ kanboard_bin_path }}/plugins"
