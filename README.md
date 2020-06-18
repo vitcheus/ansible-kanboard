@@ -5,7 +5,8 @@ Ansible role for install and configure [kanboard](https://kanboard.org)
 Limitation
 ----------
 
-1. This role not install `php` and `nginx` you must first install them yourself
+1. This role not install `php`, `php extentions` and `nginx` you must first install them yourself
+see [additional](README.md#Additional)
 2. Web server must have permission for readable and executable in the kanboard dir
 3. If you want to use an external DB such as (Mysql/PostgreSQL) install the selected DB before the run role
 
@@ -104,6 +105,41 @@ All configuration parameters you can see on the [kanboard documentation](https:/
 
 Dependencies
 ------------
+none
+
+Additional
+-----------
+1. for install nginx you can use this role [nginxinc.nginx][1]
+2. for install php and extensions you can use this role [geerlingguy.php][2]
+
+For example:
+```yaml
+- name: Install php and nginx
+  hosts: 
+    - kanbord.example.com
+  become: yes
+  become_method: sudo
+  roles:
+    - nginxinc.nginx
+    - geerlingguy.repo-remi
+    - geerlingguy.php-versions
+    - geerlingguy.php
+  vars:
+    php_version: '7.3'
+    php_webserver_daemon: "nginx"
+    php_packages_state: "latest"
+    php_packages:
+      - php
+      - php-cli
+      - php-fpm
+      - php-json
+      - php-gd
+      - php-mbstring
+      - php-pgsql
+      - php-xml
+      - php-ldap
+      - php-zip
+```
  
 Example Playbook
 ------------
@@ -145,3 +181,5 @@ Example Playbook
       bruteforce_lockdown_duration: 30
 ```
 
+[1]: https://github.com/nginxinc/ansible-role-nginx
+[2]: https://github.com/geerlingguy/ansible-role-php
