@@ -29,15 +29,15 @@ You can change all variables by group_vars or host_vars
 | Variable name | Required* | Description | Default Value |
 | --- | --- | --- | --- |
 | `kanboard_version` | **Yes** | Version of the installing kanboard software | 1.2.14 | 
-| `kanboard_user` | **No** | OS user name | kanboard | 
+| `kanboard_user` | **No** | OS user name | nginx | 
 | `kanboard_group` | **No** | OS group name | nginx | 
 | `kanboard_secure_install` | **No** | Remove not safety files | true |
 | `kanboard_session_duration` | **No** | session duration | 0 |
 | `kanboard_security_config_map` | **No** | dictionary of security setting | {} |
-| `kanboard_bin_path` | **No** | kanboard binary dir | /opt/kanboard | 
-| `kanboard_data_path` | **No** | Kanboard data dir | /opt/kanboard/data | 
-| `kanboard_log_path` | **No** | kanboard log dir | /opt/kanboard/logs | 
-| `kanboard_plugin_path` | **No**   | kanboard plugin dir | /opt/kanboard/plugins | 
+| `kanboard_bin_path` | **No** | kanboard binary dir | /usr/share/nginx/kanboard | 
+| `kanboard_data_path` | **No** | Kanboard data dir | /usr/share/nginx/kanboard/data | 
+| `kanboard_log_path` | **No** | kanboard log dir | /var/log/kanboard | 
+| `kanboard_plugin_path` | **No**   | kanboard plugin dir | /usr/share/nginx/kanboard/plugins | 
 | `kanboard_download_tmp` | **No** | temp dir for download kanboard | /tmp/kanboard | 
 | `kanboard_log_driver` | **No** | log driver for kanboard | file |
 | `kanboard_logrotate_freq` | **No** | how many days keep logs | 7 |
