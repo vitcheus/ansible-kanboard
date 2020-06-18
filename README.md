@@ -109,9 +109,10 @@ none
 
 Additional
 -----------
-1. for install nginx you can use this role [nginxinc.nginx] [1]:
-2. for install php and extensions you can use this role [geerlingguy.php] [2]:
-For example
+1. for install nginx you can use this role [nginxinc.nginx][1]
+2. for install php and extensions you can use this role [geerlingguy.php][2]
+
+For example:
 ```yaml
 - name: Install php and nginx
   hosts: 
